@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
-import { Square } from '../square';
+import { Square } from './Square';
 
 @Component({
   selector: 'app-canvas',

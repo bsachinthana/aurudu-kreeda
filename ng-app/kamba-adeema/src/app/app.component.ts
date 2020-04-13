@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
-import { Square } from './square';
 
 @Component({
   selector: 'app-root',
