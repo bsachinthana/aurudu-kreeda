@@ -1,54 +1,72 @@
-@media screen and (max-width:600px){
-    .container{
+@media screen and (max-width:600px) {
+    .container {
         margin-top: 100px;
     }
-    .btn-start{
+
+    .btn-start {
         text-align: center;
         padding-top: 5px;
         padding-bottom: 15px;
     }
-    .divide{
+    .btn{
+        padding: 20px 60px;
+    }
+    .btnjoin{
+        padding: 15px 45px;
+    }
+
+    .divide {
         text-align: center;
         padding-bottom: 10px;
     }
+
     .example-form {
         padding-top: 20px;
         min-width: 150px;
         max-width: 500px;
         width: 100%;
     }
-    .btn-join{
+
+    .btn-join {
         text-align: center;
     }
+
     .example-full-width {
         width: 100%;
     }
 }
-@media screen and (min-width:600px){
+
+@media screen and (min-width:600px) {
     .container {
         margin-top: 100px;
         width: 700px;
     }
-    
-    .btn-start{
+
+    .btn-start {
         text-align: center;
         padding-top: 5px;
         padding-bottom: 30px;
     }
-    .divide{
+    .btn{
+        padding: 20px 60px;
+    }
+
+    .divide {
         text-align: center;
         padding-bottom: 30px;
     }
-    .btn-join{
+
+    .btn-join {
         padding-top: 30px;
     }
+    
     .example-form {
         padding-top: 20px;
         min-width: 150px;
         max-width: 500px;
         width: 100%;
     }
-    
+
     .example-full-width {
         width: 100%;
     }

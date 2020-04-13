@@ -14,8 +14,6 @@ export class GameComponent implements OnInit {
 
   getClickedSequence(){
     //console.log("Clicked");
-    
-    
   }
 
 }
