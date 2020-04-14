@@ -3,16 +3,26 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { CanvasComponent } from './canvas/canvas.component';
+
+import { HomeComponent } from './layout/home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './layout/material/material/material.module';
+import { GameComponent } from './layout/game/game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent
+    HomeComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
