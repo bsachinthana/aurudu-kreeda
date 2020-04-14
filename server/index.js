@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
       var obj = gamesMap.get(data.gameId);
       obj.score = data.side === 'left'?obj.score-data.rate:obj.score+data.rate;
       gamesMap.set(data.gameId, obj);
-      if(obj.score >500 || obj.score < -500)
+      if(obj.score >300 || obj.score < -300)
       {
         io.to(data.gameId).removeAllListeners("GameData");
         return io.to(data.gameId).emit("message",{status:"GameEnd",score:obj.score});

@@ -15,7 +15,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   interval;
   squares: Square[] = [];
   square: Square;
-
+  pixelsPerUnit;
   constructor(private ngZone: NgZone) {
 
   }
@@ -23,42 +23,34 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.ctx.fillStyle = 'red';
-    // setInterval(() => {
-    //   this.tick();
-    // }, 200);
+    this.pixelsPerUnit = Math.round(this.ctx.canvas.width / 2) / 300;
+    if (this.pixelsPerUnit === 0) { this.pixelsPerUnit = 1; }
   }
 
   ngAfterViewInit() {
     this.square = new Square(this.ctx);
     this.changeValue.subscribe(val => {
-      if (val > 0) {
-        this.playRight();
-      } else if (val < 0) {
-        this.playLeft();
-      }
+      this.requestId = this.ngZone.runOutsideAngular(() => this.tick(Math.round(val * this.pixelsPerUnit)));
     });
   }
 
-  tick(side) {
+  tick(value) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    if (side === 'left') {
-      return requestAnimationFrame(() => this.square.moveLeft());
-    } else {
-      return requestAnimationFrame(() => this.square.moveRight());
-    }
+    return requestAnimationFrame(() => this.square.moveTo(value));
   }
 
   playRight() {
-    // this.requestId = this.ngZone.runOutsideAngular(() => requestAnimationFrame(() => this.tick('left')));
-    this.requestId = requestAnimationFrame(() => this.tick('left'));
+    this.requestId = this.ngZone.runOutsideAngular(() => requestAnimationFrame(() => this.tick('left')));
   }
 
   playLeft() {
-    // this.requestId = this.ngZone.runOutsideAngular(() => requestAnimationFrame(() => this.tick('right')));
+    this.requestId = this.ngZone.runOutsideAngular(() => requestAnimationFrame(() => this.tick('right')));
   }
 
   ngOnDestroy() {
     cancelAnimationFrame(this.requestId);
   }
+
+
 
 }

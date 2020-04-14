@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   last = Date.now();
   diff = 16666;
-  cps = 1000 / 10 * 100;
+  cps = 1000;
 
   idleMouseCheckInterval;
 
@@ -73,7 +73,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   click() {
     this.diff = Date.now() - this.last;
     this.last = Date.now();
-    const percent = Math.round(this.cps / this.diff);
+    let percent = Math.round(this.cps / this.diff);
+    if (percent > 100) { percent = 100; }
     this.progressStyle = `${percent}%`;
     console.log(percent);
     this.ds.sendGameData({
@@ -85,8 +86,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   checkMouseIdle() {
     const percent = Math.round(this.cps / this.diff);
-    if ((Date.now() - this.last) > 500) {
-      this.diff += 500;
+    if ((Date.now() - this.last) > 250) {
+      this.diff += 250;
       this.progressStyle = `${percent}%`;
       console.log(percent);
     }
