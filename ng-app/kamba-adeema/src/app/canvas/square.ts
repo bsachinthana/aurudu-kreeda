@@ -4,7 +4,11 @@ export class Square {
     private y = 0;
     private z = 30;
 
-    constructor(private ctx: CanvasRenderingContext2D) {}
+    constructor(private ctx: CanvasRenderingContext2D) {
+      this.x = ((this.x + this.ctx.canvas.width) / 2) - (this.z / 2);
+      this.y = ((this.y + this.ctx.canvas.height) / 2) - (this.z / 2);
+      this.draw();
+    }
 
     moveRight() {
       this.x++;
@@ -18,6 +22,6 @@ export class Square {
 
     private draw() {
       this.ctx.fillStyle = this.color;
-      this.ctx.fillRect(this.z * this.x, this.z * this.y, this.z, this.z);
+      this.ctx.fillRect(this.x, this.y, this.z, this.z);
     }
   }

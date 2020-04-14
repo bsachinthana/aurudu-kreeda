@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 
   socket.on("joinGame", (data) => {
     var gameId;
-
+    var side;
     const player = {
       id: socket.id,
       name: data.name,
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
       };
 
       var boolSide = Math.random() >= 0.5;
-      var side = boolSide ? 'right' : 'left';
+      side = boolSide ? 'right' : 'left';
       if (boolSide) {
         game.right.push(player);
       } else {
@@ -69,8 +69,8 @@ io.on('connection', (socket) => {
       }
 
       if (gameObj.count %2 === 0) {
-        var boolSide = Math.random() >= 0.5;
-        var side = boolSide ? 'right' : 'left';
+        var boolSide = (Math.random() >= 0.5);
+        side = boolSide ? 'right' : 'left';
         if (boolSide) {
           gameObj.right.push(player);
         } else {
@@ -80,8 +80,10 @@ io.on('connection', (socket) => {
         if(gameObj.left.length>gameObj.right.length)
         {
           gameObj.right.push(player);
+          side = 'right';
         }else{
           gameObj.left.push(player);
+          side = 'left';
         }
       }
         gameObj.count++;
@@ -100,6 +102,11 @@ io.on('connection', (socket) => {
         } 
       });
 
+      io.to(gameId).emit("message", 
+      { status: 'PlayerAdded',
+        gameStatus:finalGameObj
+      });
+
       //Emit game start event to all room members
       if (finalGameObj.count === 6) {
         io.to(gameId).emit("message",
@@ -109,30 +116,46 @@ io.on('connection', (socket) => {
               gameStatus: finalGameObj
             }
           });
+          count = 3;
+          var countdownTimer = setInterval(function(){
+            io.to(gameId).emit("message",{
+              status:'Countdown',
+              data:count
+            });
+            count--
+            if(count==0)
+            {
+              clearInterval(countdownTimer);
+            }
+          }, 1500);
       }
       console.log(data.name + " Joined game " + gameId);
     });
 
 
     // Game logic listeners
-    socket.on("gameData", function(data){
+    socket.on("GameData", function(data){
       var obj = gamesMap.get(data.gameId);
-      obj.score = data.player.side === 'left'?obj.score-data.rate:obj.score+data.rate;
-      gamesMap.set(data.gameId, score);
-      if(obj.score >10 || obj.score < -10)
+      obj.score = data.side === 'left'?obj.score-data.rate:obj.score+data.rate;
+      gamesMap.set(data.gameId, obj);
+      if(obj.score >500 || obj.score < -500)
       {
-        io.to(data.gameId).removeAllListeners("gameData");
+        io.to(data.gameId).removeAllListeners("GameData");
+        return io.to(data.gameId).emit("message",{status:"GameEnd",score:obj.score});
       }
-      io.to(data.gameId).emit("message",{status:"GameEnd",score:obj.score});
+      io.to(data.gameId).emit("message",{status:"GameDataUpdate",score:obj.score});
     });
     
     //Disconenct Listener
     socket.on("disconnect", () => {
       var obj = gamesMap.get(data.gameId);
-      obj.left = obj.left.filter(x => x.id != socket.id);
-      obj.right = obj.right.filter(x => x.id != socket.id);
-      obj.count--;
-      gamesMap.set(data.gameId,obj);
+      if(obj) {
+        obj.left = obj.left.filter(x => x.id != socket.id);
+        obj.right = obj.right.filter(x => x.id != socket.id);
+        obj.count--;
+        gamesMap.set(data.gameId,obj);
+      }
+
       io.to(data.gameId).emit("message", 
       { status: 'PlayerDisconnected',
         data: { 

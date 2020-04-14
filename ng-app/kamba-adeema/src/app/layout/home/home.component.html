@@ -1,38 +1,77 @@
-<div class="container">
-    <div class="col-md-12">
-        <mat-card>
-        <div class="row">
-            <div class="col-md-12 btn-start">
-                <button class="btn" mat-raised-button color="primary" routerLink="/play" routerLinkActive="router-link-active" >
-                    <mat-icon aria-hidden="false" aria-label="Example home icon">double_arrow</mat-icon>
-                    Start Game
-                </button>
-            </div>
+<div class="container-fluid">
+    <!-- Hosting and Joining Component -->
+    <div class="row d-flex align-content-center justify-content-center entryRow" *ngIf="!isConnected; else gameTemplate">
+        <div class="col-md-6 col-sm-10">
+            <mat-card>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 col-sm-6">
+                        <form class="example-form">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Enter your name</mat-label>
+                                <input matInput [(ngModel)]="name" [ngModelOptions]="{standalone: true}" #ctrl="ngModel"
+                                    placeholder="Enter Code">
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div class="col-md-2 col-sm-2 btn-join">
+                        <button [disabled]="name==''" mat-raised-button color="primary" (click)="startGame()">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">double_arrow</mat-icon>
+                            Start Game
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 divide">
+                        <h2>OR</h2>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-4 col-sm-6">
+                        <form class="example-form">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Enter your friend's code here</mat-label>
+                                <input matInput placeholder="Enter Code" [(ngModel)]="code"
+                                    [ngModelOptions]="{standalone: true}" #ctrlCode="ngModel">
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div class="col-md-2 col-sm-2 btn-join">
+                        <button [disabled]="code==''" mat-raised-button color="accent" (click)="joinGame()">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">person_add</mat-icon>
+                            Join
+                        </button>
+                    </div>
+                </div>
+            </mat-card>
         </div>
-        <div class="row">
-            <div class="col-md-12 divide">
-                <h2>OR</h2>
-            </div>
-        </div>
-        <mat-divider></mat-divider>
-        <div class="row">
-            <div class="col-md-10">
-                <form class="example-form">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Enter your friend's code here</mat-label>
-                        <textarea matInput placeholder="Enter Code"></textarea>
-                    </mat-form-field>
-                </form>
-            </div>
-            <div class="col-md-2 btn-join">
-                <button class="btnjoin" mat-raised-button color="accent">
-                    <mat-icon aria-hidden="false" aria-label="Example home icon">person_add</mat-icon>
-                    Join
-                </button>
-            </div>
-        </div>
-    </mat-card>
-    
     </div>
+    <ng-template #gameTemplate>
+        <div class="row game-row">
+            <div class="col">
+                <h4>{{code}}</h4>
+                <p>Copy this code and share with your friends to join the game</p>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-10">
+                <app-canvas [changeValue]="getGameDataSubject()"></app-canvas> 
+            </div>
+            <div class="col-2">
+                <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let player of gameObj.left">{{player.name}}</li>
+                </ul>
+                <ul class="list-group mt-3">
+                    <li class="list-group-item" *ngFor="let player of gameObj.right">{{player.name}}</li>
+                </ul>
+                <div style="margin-top:1em;">
+                    <div class="progress">
+                        <div class="progress-bar" [ngStyle]="{'width': progressStyle}"></div>
+                      </div>
+                    <button class="btn btn-primary btn-large mt-2" (click)="click()">Click</button>
+                </div>
+            </div>
+        </div>
 
+    </ng-template>
 </div>

@@ -12,8 +12,5 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getClickedSequence(){
-    //console.log("Clicked");
-  }
 
 }
