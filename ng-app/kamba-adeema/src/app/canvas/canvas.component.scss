@@ -1,0 +1,12 @@
+canvas { 
+    border-style: solid
+}
+
+button {
+    transition-duration: 0.4s;
+}
+  
+button:hover {
+    background-color:blue;
+    color: white;
+}
