@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "prepare":"./exec.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Buddhima Amarathunga",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
