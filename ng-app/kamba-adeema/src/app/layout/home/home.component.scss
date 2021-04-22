@@ -50,6 +50,15 @@
     height: 100%;
 }
 
+.container-fluid{
+    background-image: url('/assets/newYearBg.jpg');
+    background-size: cover;
+}
+
 .game-row{
     background-color: white;
+    h2, p{
+        display: inline-block;
+        margin : 5px 1em;
+    }
 }

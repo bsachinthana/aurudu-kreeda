@@ -37,7 +37,7 @@
                         </form>
                     </div>
                     <div class="col-md-2 col-sm-2 btn-join">
-                        <button [disabled]="code==''" mat-raised-button color="accent" (click)="joinGame()">
+                        <button [disabled]="name =='' || code==''" mat-raised-button color="accent" (click)="joinGame()">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">person_add</mat-icon>
                             Join
                         </button>
@@ -49,8 +49,13 @@
     <ng-template #gameTemplate>
         <div class="row game-row">
             <div class="col">
-                <h4>{{code}}</h4>
+                <h2>{{code}}</h2>
                 <p>Copy this code and share with your friends to join the game</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1>{{gameStatus}}</h1>
             </div>
         </div>
         <div class="row mt-4">
@@ -64,7 +69,7 @@
                 <ul class="list-group mt-3">
                     <li class="list-group-item" *ngFor="let player of gameObj.right">{{player.name}}</li>
                 </ul>
-                <div style="margin-top:1em;">
+                <div style="margin-top:1em;" *ngIf="isStarted">
                     <div class="progress">
                         <div class="progress-bar" [ngStyle]="{'width': progressStyle}"></div>
                       </div>

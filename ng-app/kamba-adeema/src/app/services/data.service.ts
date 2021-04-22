@@ -10,7 +10,7 @@ export class DataService {
   constructor(private socket: Socket) {
     this.socket.on('message', data => {
       this.messageSubject.next(data);
-      console.log(data);
+      //console.log(data);
     });
   }
 

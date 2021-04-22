@@ -28,6 +28,7 @@ export class Square {
     }
 
     moveTo(centerOriginatedPos) {
+      console.log(centerOriginatedPos);
       this.x = this.widthHalf + centerOriginatedPos;
       this.draw();
     }

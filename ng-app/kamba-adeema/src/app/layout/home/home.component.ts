@@ -10,17 +10,21 @@ import { Observable, Subject } from 'rxjs';
 export class HomeComponent implements OnInit, AfterViewInit {
   name = '';
   code = '';
+  gameStatus = '';
   isConnected = false;
+  isStarted = false;
   playerSide = '';
   gameObj;
   messages: Observable<any>;
   progressStyle = '1%';
 
   last = Date.now();
-  diff = 16666;
-  cps = 1000;
+  diff = 270;
+  cps = 130;
 
   idleMouseCheckInterval;
+
+  diffArray = [];
 
   private gameDataSubject: Subject<number> = new Subject();
 
@@ -35,7 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.idleMouseCheckInterval = setInterval(() => {this.checkMouseIdle(); }, 250);
+
   }
 
   startGame() {
@@ -46,23 +50,45 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.ds.joinGame(this.code, this.name);
   }
 
+  initGameControls(){
+    this.idleMouseCheckInterval = setInterval(() => { this.checkMouseIdle(); }, 250);
+  }
+
   resolveMessages(msg: any) {
     switch (msg.status) {
       case 'JoinSuccess':
         this.isConnected = true;
         this.code = msg.data.player.id;
         this.playerSide = msg.data.player.side;
-        console.log(this.playerSide);
         this.gameObj = msg.data.gameStatus;
+        this.gameStatus = 'Waiting for Other players'
         break;
       case 'GameDataUpdate':
         this.gameDataSubject.next(msg.score);
         break;
       case 'GameEnd':
         clearInterval(this.idleMouseCheckInterval);
+        this.isStarted = false;
+        alert("Game over!!!");
+        this.isConnected = false;
+        this.code = '';
         break;
       case 'PlayerAdded':
         this.gameObj = msg.gameStatus;
+        break;
+      case 'GameStart':
+        this.gameStatus = 'All players joined... Starting game...'
+        break;
+      case 'Countdown':
+        var count = msg.data;
+        this.gameStatus = count.toString();
+        if(count ===0){
+          this.isStarted = true;
+          this.initGameControls();
+        }
+        break;
+      case 'PlayerDisconnected':
+        this.gameObj = msg.data.gameStatus;
     }
   }
 
@@ -71,25 +97,36 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   click() {
-    this.diff = Date.now() - this.last;
+    if (this.diffArray.length > 7) {
+      this.diffArray = this.diffArray.slice(1, this.diffArray.length);
+    }
+    this.diffArray.push(Math.min(27000, Date.now() - this.last));
     this.last = Date.now();
-    let percent = Math.round(this.cps / this.diff);
-    if (percent > 100) { percent = 100; }
+  }
+
+  checkMouseIdle() {
+    if ((Date.now() - this.last) >= 250) {
+      if (this.diffArray.length > 7) {
+        this.diffArray = this.diffArray.slice(1, this.diffArray.length);
+      }
+      this.diffArray.push(Math.min(27000, Date.now() - this.last));
+    }
+    this.calculateAndSendGameData();
+  }
+
+  calculateAndSendGameData() {
+    const avgDiff = this.diffArray.reduce((prev, cur) => prev + cur, 0) / this.diffArray.length;
+    let percent = Math.round(this.cps / avgDiff * 100);
+
+    if (percent > 100) {
+      percent = 100;
+    }
+
     this.progressStyle = `${percent}%`;
-    console.log(percent);
     this.ds.sendGameData({
       gameId: this.code,
       side: this.playerSide,
       rate: percent / 3
     });
-  }
-
-  checkMouseIdle() {
-    const percent = Math.round(this.cps / this.diff);
-    if ((Date.now() - this.last) > 250) {
-      this.diff += 250;
-      this.progressStyle = `${percent}%`;
-      console.log(percent);
-    }
   }
 }
