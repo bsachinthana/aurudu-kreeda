@@ -2,13 +2,17 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server/index.js",
+  "main": "index.js",
   "scripts": {
-    "prepare":"./exec.sh",
+    "prepare":"chmod u+x exec.sh && ./exec.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Buddhima Amarathunga",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "redom": "^3.26.0",
+    "socket.io": "^2.3.0"
   }
 }
