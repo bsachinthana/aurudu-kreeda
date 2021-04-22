@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare":"chmod u+x exec.sh && ./exec.sh",
+    "preinstall":"chmod u+x exec.sh && ./exec.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Buddhima Amarathunga",
