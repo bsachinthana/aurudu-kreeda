@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, NgZone, OnDestroy, AfterViewInit, Input } from '@angular/core';
-import { Square } from './Square';
+import { Square } from './square';
 import { Observable } from 'rxjs';
 
 @Component({
