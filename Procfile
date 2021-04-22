@@ -1,1 +1,1 @@
-web: bash exec.sh
+web: ./exec.sh
