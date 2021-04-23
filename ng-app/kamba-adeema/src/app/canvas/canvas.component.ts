@@ -15,6 +15,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   interval;
   squares: Square[] = [];
   square: Square;
+  base_image: HTMLImageElement;
   pixelsPerUnit;
 
   constructor(private ngZone: NgZone) {
@@ -32,15 +33,20 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.square = new Square(this.ctx);
     this.changeValue.subscribe(val => {
-      this.requestId = this.ngZone.runOutsideAngular(() => this.tick(val));
+      this.requestId = this.ngZone.runOutsideAngular(() => this.tick(-val));
     });
+    
+    // this.base_image = new Image();
+    // this.base_image.src = '/assets/game_bg.png';
+    // this.base_image.onload = () => {
+    //   this.ctx.drawImage(this.base_image, 0, 0, this.ctx.canvas.width,this.ctx.canvas.height);
+    // }
   }
 
   tick(value) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     const width = (this.ctx.canvas.width / 2);
-    console.log(value, width, value*width);
-    return requestAnimationFrame(() => this.square.moveTo(value * width));
+    return requestAnimationFrame(() => this.square.moveTo(Math.ceil(value * width/6)));
   }
 
   playRight() {

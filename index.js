@@ -111,7 +111,7 @@ io.on('connection', (socket) => {
         });
 
       //Emit game start event to all room members
-      if (finalGameObj.count === 6) {
+      if (finalGameObj.count === 4) {
         io.to(gameId).emit("message",
           {
             status: 'GameStart',
@@ -138,6 +138,9 @@ io.on('connection', (socket) => {
     // Game logic listeners
     socket.on("GameData", function (data) {
       var obj = gamesMap.get(data.gameId);
+      if(!obj){
+        return;
+      }
       const effectiveRate = data.rate > 5 ? data.rate : 0;
       obj.score = data.side === 'left' ? obj.score - effectiveRate : obj.score + effectiveRate;
       gamesMap.set(data.gameId, obj);
