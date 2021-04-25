@@ -14,15 +14,54 @@ app.get('/', function (req, res) {
 
 const gamesMap = new Map();
 const TOTAL_GAME_POINTS = 1000;
+const MAX_PLAYERS = 6;
 
+class Game{
+  constructor(){
+    this.count = 0;
+    this.right = [];
+    this.left = [];
+    this.score = 0;
+  }
+
+
+  addPlayer(player, side)
+  {
+    this[side].push(player);
+    this.count ++;
+  }
+
+  isFull(){
+    return this.count == MAX_PLAYERS;
+  }
+
+  removePlayer(socketId){
+    this.left = obj.left.filter(x => x.id != socketId);
+    this.right = obj.right.filter(x => x.id != socketId);
+    this.count = this.left.length + this.right.length;
+  }
+}
 function generateGameId() {
   var result = '';
-  var characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   var charactersLength = characters.length;
   for (var i = 0; i < 5; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+function getSide(gameObj, isRandom = false) {
+  if (isRandom) {
+    if (gameObj.count % 2 === 0) {
+      return (Math.random() >= 0.5) ? 'right' : 'left';
+    } else {
+      return (gameObj.left.length > gameObj.right.length) ? 'right' : 'left';
+    }
+  } else {
+    return gameObj.count < (MAX_PLAYERS / 2) ? 'left' : 'right';
+  }
+
 }
 
 io.on('connection', (socket) => {
@@ -43,21 +82,11 @@ io.on('connection', (socket) => {
         gameId = generateGameId();
       }
 
-      const game = {
-        count: 1,
-        right: [],
-        left: [],
-        score: 0
-      };
-
-      var boolSide = Math.random() >= 0.5;
-      side = boolSide ? 'right' : 'left';
-      if (boolSide) {
-        game.right.push(player);
-      } else {
-        game.left.push(player);
-      }
+      var game = new Game();
+      var side = getSide(game, false);
+      game.addPlayer(player, side);
       gamesMap.set(gameId, game);
+
     } else if (data.connection === 'join') {
       gameId = data.gameId;
       var gameObj = gamesMap.get(gameId);
@@ -66,28 +95,12 @@ io.on('connection', (socket) => {
         return socket.emit("message", { status: "InvalidGameId" });
       }
 
-      if (gameObj.count === 6) {
+      if (gameObj.count === MAX_PLAYERS) {
         return socket.emit("message", { status: "GameFull" });
       }
 
-      if (gameObj.count % 2 === 0) {
-        var boolSide = (Math.random() >= 0.5);
-        side = boolSide ? 'right' : 'left';
-        if (boolSide) {
-          gameObj.right.push(player);
-        } else {
-          gameObj.left.push(player);
-        }
-      } else {
-        if (gameObj.left.length > gameObj.right.length) {
-          gameObj.right.push(player);
-          side = 'right';
-        } else {
-          gameObj.left.push(player);
-          side = 'left';
-        }
-      }
-      gameObj.count++;
+      var side = getSide(gameObj, false);
+      gameObj.addPlayer(player,side);
       gameObj = gamesMap.set(gameId, gameObj);
     }
 
@@ -111,7 +124,7 @@ io.on('connection', (socket) => {
         });
 
       //Emit game start event to all room members
-      if (finalGameObj.count === 4) {
+      if (finalGameObj.isFull()) {
         io.to(gameId).emit("message",
           {
             status: 'GameStart',
@@ -129,7 +142,7 @@ io.on('connection', (socket) => {
             clearInterval(countdownTimer);
           }
           count--;
-        }, 1500);
+        }, 1250);
       }
       console.log(data.name + " Joined game " + gameId);
     });
@@ -152,13 +165,13 @@ io.on('connection', (socket) => {
 
         //remove all sockets from the room
         io.in(data.gameId).clients((error, socketIds) => {
-          if (error) throw error;    
+          if (error) throw error;
           socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(data.gameId));
         });
 
         // remove game data from the server
         gamesMap.delete(data.gameId);
-        
+
         return;
       }
 
@@ -169,9 +182,7 @@ io.on('connection', (socket) => {
     socket.on("disconnect", () => {
       var obj = gamesMap.get(data.gameId);
       if (obj) {
-        obj.left = obj.left.filter(x => x.id != socket.id);
-        obj.right = obj.right.filter(x => x.id != socket.id);
-        obj.count--;
+        obj.removePlayer(socket.id);
         gamesMap.set(data.gameId, obj);
       }
 

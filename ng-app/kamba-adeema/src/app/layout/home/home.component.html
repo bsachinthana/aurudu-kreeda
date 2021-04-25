@@ -1,4 +1,23 @@
-<div class="container-fluid">
+<div id="overlay" *ngIf="isConnected && !isStarted">
+    <div class="row d-flex align-items-center h-100">
+        <div #status class="col text-center" >
+            <p class="text-light h1">{{gameStatus}}</p>
+            <div *ngIf="gameStatus==='Game Over'">
+                <p class="h4">{{additionalGameStatus}}</p>
+                <button class="btn btn-primary" (click)="isConnected=false">Go to Home</button>
+            </div>
+            <div class="row d-flex justify-content-center" >
+                <div class="card my-3" style="width: 18rem;" *ngIf="gameStatus === 'Waiting for Other players'">
+                    <div class="card-body">
+                      <h1 class="card-title">{{code}}</h1>
+                      <p class="card-text">Copy this code and share with your friends to join the game</p>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" [ngClass]="{'bg' : !isConnected}">
     <!-- Hosting and Joining Component -->
     <div class="row d-flex align-content-center justify-content-center entryRow" *ngIf="!isConnected; else gameTemplate">
         <div class="col-md-6 col-sm-10">
@@ -47,26 +66,18 @@
         </div>
     </div>
     <ng-template #gameTemplate>
-        <div class="row game-row">
-            <div class="col">
-                <h2>{{code}}</h2>
-                <p>Copy this code and share with your friends to join the game</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <h1>{{gameStatus}}</h1>
-            </div>
-        </div>
-        <div class="row mt-4">
+        <div class="row pt-4">
             <div class="col-10">
                 <app-canvas [changeValue]="getGameDataSubject()"></app-canvas> 
             </div>
             <div class="col-2">
+
                 <ul class="list-group">
+                    <li class="list-group-item h5 list-group-item-primary">Left</li>
                     <li class="list-group-item" *ngFor="let player of gameObj.left">{{player.name}}</li>
                 </ul>
                 <ul class="list-group mt-3">
+                    <li class="list-group-item h5 list-group-item-primary">Right</li>
                     <li class="list-group-item" *ngFor="let player of gameObj.right">{{player.name}}</li>
                 </ul>
                 <div style="margin-top:1em;" *ngIf="isStarted">

@@ -1,5 +1,5 @@
 import { DataService } from './../../services/data.service';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -11,6 +11,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   name = '';
   code = '';
   gameStatus = '';
+  additionalGameStatus = '';
   isConnected = false;
   isStarted = false;
   playerSide = '';
@@ -69,9 +70,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case 'GameEnd':
         clearInterval(this.idleMouseCheckInterval);
         this.isStarted = false;
-        alert("Game over!!!");
-        this.isConnected = false;
         this.code = '';
+        this.gameStatus = 'Game Over'
+        this.additionalGameStatus = `${msg.score < 0 ? 'Left' : 'Right'} Won the Game !!!!`
         break;
       case 'PlayerAdded':
         this.gameObj = msg.gameStatus;
