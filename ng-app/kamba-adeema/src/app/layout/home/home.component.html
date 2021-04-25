@@ -1,27 +1,28 @@
 <div id="overlay" *ngIf="isConnected && !isStarted">
     <div class="row d-flex align-items-center h-100">
-        <div #status class="col text-center" >
+        <div #status class="col text-center">
             <p class="text-light h1">{{gameStatus}}</p>
             <div *ngIf="gameStatus==='Game Over'">
                 <p class="h4">{{additionalGameStatus}}</p>
                 <button class="btn btn-primary" (click)="isConnected=false">Go to Home</button>
             </div>
-            <div class="row d-flex justify-content-center" >
+            <div class="row d-flex justify-content-center">
                 <div class="card my-3" style="width: 18rem;" *ngIf="gameStatus === 'Waiting for Other players'">
                     <div class="card-body">
-                      <h1 class="card-title">{{code}}</h1>
-                      <p class="card-text">Copy this code and share with your friends to join the game</p>
+                        <h1 class="card-title">{{code}}</h1>
+                        <p class="card-text">Copy this code and share with your friends to join the game</p>
                     </div>
-                  </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="container-fluid" [ngClass]="{'bg' : !isConnected}">
+<div class="container-fluid" [ngClass]="isConnected ? 'bg-tile' :'bg'">
     <!-- Hosting and Joining Component -->
-    <div class="row d-flex align-content-center justify-content-center entryRow" *ngIf="!isConnected; else gameTemplate">
-        <div class="col-md-6 col-sm-10">
-            <mat-card>
+    <div class="row h-100 d-flex align-content-center justify-content-end entryRow"
+        *ngIf="!isConnected; else gameTemplate">
+        <div class="col-md-4 col-sm-10">
+            <mat-card class="py-4">
                 <div class="row justify-content-center">
                     <div class="col-md-4 col-sm-6">
                         <form class="example-form">
@@ -56,7 +57,8 @@
                         </form>
                     </div>
                     <div class="col-md-2 col-sm-2 btn-join">
-                        <button [disabled]="name =='' || code==''" mat-raised-button color="accent" (click)="joinGame()">
+                        <button [disabled]="name =='' || code==''" mat-raised-button color="accent"
+                            (click)="joinGame()">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">person_add</mat-icon>
                             Join
                         </button>
@@ -66,9 +68,9 @@
         </div>
     </div>
     <ng-template #gameTemplate>
-        <div class="row pt-4">
-            <div class="col-10">
-                <app-canvas [changeValue]="getGameDataSubject()"></app-canvas> 
+        <div class="row pt-4 h-100 d-flex align-content-center">
+            <div class="col-10 d-flex  justify-content-center">
+                <app-canvas [changeValue]="getGameDataSubject()"></app-canvas>
             </div>
             <div class="col-2">
 
@@ -83,7 +85,7 @@
                 <div style="margin-top:1em;" *ngIf="isStarted">
                     <div class="progress">
                         <div class="progress-bar" [ngStyle]="{'width': progressStyle}"></div>
-                      </div>
+                    </div>
                     <button class="btn btn-primary btn-large mt-2" (click)="click()">Click</button>
                 </div>
             </div>

@@ -63,6 +63,11 @@
     background-size: cover;
 }
 
+.bg-tile{
+    background-image: url('/assets/bg_tile.png');
+    background-repeat: repeat;
+}
+
 #overlay {
     position: fixed; /* Sit on top of the page content */
     /* Hidden by default  display: none;*/
