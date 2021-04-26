@@ -1,6 +1,8 @@
 import { DataService } from './../../services/data.service';
-import { Component, OnInit, AfterViewInit, Renderer2, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { TeamSelectionComponent } from '../modals/team-selection/team-selection.component';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +13,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   name = '';
   code = '';
   gameStatus = '';
-  additionalGameStatus = '';
+  additionalGameStatus: any = {};
   isConnected = false;
   isStarted = false;
   playerSide = '';
@@ -29,7 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   private gameDataSubject: Subject<number> = new Subject();
 
-  constructor(private ds: DataService) {
+  constructor(public ds: DataService, public dialog: MatDialog) {
     this.messages = this.ds.messageObservable;
     this.messages.subscribe(x => {
       this.resolveMessages(x);
@@ -40,18 +42,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-
   }
 
-  startGame() {
-    this.ds.startGame(this.name);
+  startGame(teamNames) {
+    this.ds.startGame(this.name, teamNames);
   }
 
   joinGame() {
     this.ds.joinGame(this.code, this.name);
   }
 
-  initGameControls(){
+  initGameControls() {
     this.idleMouseCheckInterval = setInterval(() => { this.checkMouseIdle(); }, 250);
   }
 
@@ -72,7 +73,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.isStarted = false;
         this.code = '';
         this.gameStatus = 'Game Over'
-        this.additionalGameStatus = `${msg.score < 0 ? 'Left' : 'Right'} Won the Game !!!!`
+        this.additionalGameStatus = `${msg.score < 0 ? this.ds.teams[this.gameObj.teamNames.left] : this.ds.teams[this.gameObj.teamNames.right]}`
         break;
       case 'PlayerAdded':
         this.gameObj = msg.gameStatus;
@@ -83,7 +84,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case 'Countdown':
         var count = msg.data;
         this.gameStatus = count.toString();
-        if(count ===0){
+        if (count === 0) {
           this.isStarted = true;
           this.initGameControls();
         }
@@ -129,5 +130,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
       side: this.playerSide,
       rate: percent / 3
     });
+  }
+
+  loadTeamSelectionModal() {
+    const teamSelectionRef = this.dialog.open(TeamSelectionComponent, {
+      disableClose: true,
+      hasBackdrop: true
+    });
+    teamSelectionRef.afterClosed().subscribe(result => {
+      this.startGame(result);
+    })
+  }
+
+  goHome() {
+    this.isConnected = false;
+    this.gameStatus = '';
+    this.gameObj = {};
+    this.additionalGameStatus = {};
+    this.isConnected = false;
   }
 }

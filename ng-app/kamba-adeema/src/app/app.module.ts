@@ -12,6 +12,7 @@ import { MaterialModule } from './layout/material/material/material.module';
 import { GameComponent } from './layout/game/game.component';
 import { FormsModule } from '@angular/forms';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { TeamSelectionComponent } from './layout/modals/team-selection/team-selection.component';
 
 const config: SocketIoConfig = { url: `${location.origin}`, options: {} };
 
@@ -20,7 +21,8 @@ const config: SocketIoConfig = { url: `${location.origin}`, options: {} };
     AppComponent,
     CanvasComponent,
     HomeComponent,
-    GameComponent
+    GameComponent,
+    TeamSelectionComponent
   ],
   imports: [
     BrowserModule,

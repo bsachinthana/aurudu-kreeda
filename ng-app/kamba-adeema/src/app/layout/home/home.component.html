@@ -1,10 +1,23 @@
 <div id="overlay" *ngIf="isConnected && !isStarted">
-    <div class="row d-flex align-items-center h-100">
-        <div #status class="col text-center">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+        <div #status class="col col-xl-3 col-lg-4 col-md-5 col-sm-6 text-center">
             <p class="text-light h1">{{gameStatus}}</p>
             <div *ngIf="gameStatus==='Game Over'">
-                <p class="h4">{{additionalGameStatus}}</p>
-                <button class="btn btn-primary" (click)="isConnected=false">Go to Home</button>
+                <div class="pyro-wrapper">
+                    <div class="pyro">
+                        <div class="before"></div>
+                        <div class="after"></div>
+                    </div>
+                </div>
+                <mat-card *ngIf="additionalGameStatus" class="overlay-card"> 
+                    <mat-card-header  class="h3 d-block">
+                        Winner
+                    </mat-card-header>
+                    <img mat-card-image [src]="'/assets/logos/'+additionalGameStatus.logo" />
+                    <mat-card-content>
+                        <button mat-raised-button color="primary" (click)="goHome()">New Game</button>
+                    </mat-card-content>
+                </mat-card>
             </div>
             <div class="row d-flex justify-content-center">
                 <div class="card my-3" style="width: 18rem;" *ngIf="gameStatus === 'Waiting for Other players'">
@@ -34,7 +47,8 @@
                         </form>
                     </div>
                     <div class="col-md-2 col-sm-2 btn-join">
-                        <button [disabled]="name==''" mat-raised-button color="primary" (click)="startGame()">
+                        <button [disabled]="name==''" mat-raised-button color="primary"
+                            (click)="loadTeamSelectionModal()">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">double_arrow</mat-icon>
                             Start Game
                         </button>
@@ -75,18 +89,33 @@
             <div class="col-2">
 
                 <ul class="list-group">
-                    <li class="list-group-item h5 list-group-item-primary">Left</li>
+                    <li class="list-group-item list-group-item-primary d-flex">
+                        <img mat-card-avatar [src]="'/assets/logos/' + ds.teams[gameObj.teamNames.left].logo"
+                            class="flex-column flex-shrink" />
+                        <div class="h-100 flex-column align-items-center">
+                            <small>Left</small>
+                            <p class="h5">{{ds.teams[gameObj.teamNames.left].name}}</p>
+                        </div>
+                    </li>
                     <li class="list-group-item" *ngFor="let player of gameObj.left">{{player.name}}</li>
                 </ul>
                 <ul class="list-group mt-3">
-                    <li class="list-group-item h5 list-group-item-primary">Right</li>
+                    <li class="list-group-item list-group-item-primary d-flex">
+                        <img mat-card-avatar [src]="'/assets/logos/' + ds.teams[gameObj.teamNames.right].logo"
+                            class="flex-column flex-shrink" />
+                        <div class="h-100 flex-column align-items-center">
+                            <small>Right</small>
+                            <p class="h5">{{ds.teams[gameObj.teamNames.right].name}}</p>
+                        </div>
+                    </li>
                     <li class="list-group-item" *ngFor="let player of gameObj.right">{{player.name}}</li>
                 </ul>
-                <div style="margin-top:1em;" *ngIf="isStarted">
+                <div style="margin-top:2em;" *ngIf="!isStarted" id="action-div">
+                    <p>ඔබගේ ශක්තිය</p>
                     <div class="progress">
                         <div class="progress-bar" [ngStyle]="{'width': progressStyle}"></div>
                     </div>
-                    <button class="btn btn-primary btn-large mt-2" (click)="click()">Click</button>
+                    <button class="btn btn-primary btn-large mt-2" (click)="click()">අදින්න!!!</button>
                 </div>
             </div>
         </div>

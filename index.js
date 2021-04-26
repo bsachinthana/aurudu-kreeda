@@ -22,6 +22,10 @@ class Game{
     this.right = [];
     this.left = [];
     this.score = 0;
+    this.teamNames = {
+      left : '',
+      right : ''
+    }
   }
 
 
@@ -85,6 +89,8 @@ io.on('connection', (socket) => {
       var game = new Game();
       var side = getSide(game, false);
       game.addPlayer(player, side);
+      game.teamNames = data.teamNames;
+      console.log(game);
       gamesMap.set(gameId, game);
 
     } else if (data.connection === 'join') {

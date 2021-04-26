@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col">
+        <h1 class="h2 text-center">Select Teams</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <h3 class="h3 text-center">Left Side</h3>
+        <div class="list-group">
+            <ng-container *ngFor="let team of dataService.teams | keyvalue">
+                <button mat-stroked-button type="button" class="list-group-item list-group-item-action"
+                    [ngClass]="{active: team.key === left}" (click)="setTeam('left',team.key)"> <img mat-card-avatar
+                        [src]="'/assets/logos/'+team.value.logo" /> {{team.value.name}}</button>
+            </ng-container>
+        </div>
+    </div>
+    <div class="col">
+        <h3 class="h3 text-center">Right Side</h3>
+        <div class="list-group">
+            <ng-container *ngFor="let team of dataService.teams | keyvalue">
+                <button mat-stroked-button type="button" class="list-group-item list-group-item-action"
+                    [ngClass]="{active: team.key === right}" (click)="setTeam('right',team.key)"> <img mat-card-avatar
+                        [src]="'/assets/logos/'+team.value.logo" /> {{team.value.name}}</button>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="row pt-3 d-flex justify-content-center">
+    <div class="col col-sm-4 d-flex justify-content-center">
+        <button mat-flat-button color="primary" id="okBtn" [disabled]="left == '' || right == '' || left == right"
+            (click)="close()"> OK </button>
+    </div>
+</div>
