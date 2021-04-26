@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   name = '';
   code = '';
   gameStatus = '';
-  additionalGameStatus: any = {};
+  additionalGameStatus: any = null;
   isConnected = false;
   isStarted = false;
   playerSide = '';
@@ -70,10 +70,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         break;
       case 'GameEnd':
         clearInterval(this.idleMouseCheckInterval);
-        this.isStarted = false;
+        console.log(this.gameObj);
         this.code = '';
-        this.gameStatus = 'Game Over'
-        this.additionalGameStatus = `${msg.score < 0 ? this.ds.teams[this.gameObj.teamNames.left] : this.ds.teams[this.gameObj.teamNames.right]}`
+        this.additionalGameStatus = msg.score < 0 ? this.ds.teams[this.gameObj.teamNames.left] : this.ds.teams[this.gameObj.teamNames.right];
+        this.gameStatus = 'Game Over';
+        this.isStarted = false;
         break;
       case 'PlayerAdded':
         this.gameObj = msg.gameStatus;
@@ -146,7 +147,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.isConnected = false;
     this.gameStatus = '';
     this.gameObj = {};
-    this.additionalGameStatus = {};
+    this.additionalGameStatus = null;
     this.isConnected = false;
   }
 }

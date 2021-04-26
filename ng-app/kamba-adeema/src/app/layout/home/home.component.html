@@ -11,9 +11,9 @@
                 </div>
                 <mat-card *ngIf="additionalGameStatus" class="overlay-card"> 
                     <mat-card-header  class="h3 d-block">
-                        Winner
+                        Winning Team is
                     </mat-card-header>
-                    <img mat-card-image [src]="'/assets/logos/'+additionalGameStatus.logo" />
+                    <img mat-card-image [src]="'/assets/logos/'+additionalGameStatus['logo']" />
                     <mat-card-content>
                         <button mat-raised-button color="primary" (click)="goHome()">New Game</button>
                     </mat-card-content>
