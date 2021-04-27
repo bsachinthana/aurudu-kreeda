@@ -40,8 +40,8 @@ class Game{
   }
 
   removePlayer(socketId){
-    this.left = obj.left.filter(x => x.id != socketId);
-    this.right = obj.right.filter(x => x.id != socketId);
+    this.left = this.left.filter(x => x.id != socketId);
+    this.right = this.right.filter(x => x.id != socketId);
     this.count = this.left.length + this.right.length;
   }
 }
